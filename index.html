@@ -1,31 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>Gửi đơn thuốc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      animation: slideUp 1s ease-out;
+    }
+
+    h2 {
+      color: #4a148c;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .file-input {
+      margin: 20px 0;
+      background: #f3e5f5;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px dashed #ba68c8;
+      transition: background 0.3s ease;
+    }
+
+    .file-input:hover {
+      background: #e1bee7;
+    }
+
+    input[type="file"] {
+      border: none;
+      background: transparent;
+      width: 100%;
+    }
+
+    button {
+      background: #8e24aa;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    button:hover {
+      background: #6a1b9a;
+      transform: scale(1.05);
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 15px;
+      color: #555;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(40px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-  <h2>Upload nhiều đơn thuốc PDF</h2>
-  <form id="upload-form" enctype="multipart/form-data">
-    <input type="file" name="file0" multiple accept="application/pdf" /><br><br>
-    <button type="submit">Gửi</button>
-  </form>
-  <p id="status"></p>
+  <div class="card">
+    <h2>📤 Gửi nhiều đơn thuốc (PDF)</h2>
+    <form id="upload-form" enctype="multipart/form-data">
+      <div class="file-input">
+        <input type="file" name="file0" multiple accept="application/pdf" />
+      </div>
+      <button type="submit">Tải lên</button>
+    </form>
+    <p id="status"></p>
+  </div>
 
   <script>
     const form = document.getElementById('upload-form');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
-      document.getElementById("status").textContent = "Đang gửi...";
-      const res = await fetch("https://n8n.yourdomain.com/webhook/upload-multiple-pdf", {
-        method: "POST",
-        body: formData
-      });
-      if (res.ok) {
-        document.getElementById("status").textContent = "✅ Gửi thành công!";
-      } else {
-        document.getElementById("status").textContent = "❌ Có lỗi xảy ra!";
+      const status = document.getElementById("status");
+      status.textContent = "⏳ Đang gửi...";
+      status.style.color = "#999";
+      try {
+        const res = await fetch("https://n8n.yourdomain.com/webhook/upload-multiple-pdf", {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          status.textContent = "✅ Gửi thành công!";
+          status.style.color = "#2e7d32";
+        } else {
+          status.textContent = "❌ Có lỗi xảy ra khi gửi!";
+          status.style.color = "#c62828";
+        }
+      } catch (err) {
+        status.textContent = "⚠️ Lỗi kết nối máy chủ!";
+        status.style.color = "#ff5722";
       }
     });
   </script>
