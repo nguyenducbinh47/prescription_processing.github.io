@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gửi đơn thuốc</title>
+</head>
+<body>
+  <h2>Upload nhiều đơn thuốc PDF</h2>
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="file0" multiple accept="application/pdf" /><br><br>
+    <button type="submit">Gửi</button>
+  </form>
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById('upload-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      document.getElementById("status").textContent = "Đang gửi...";
+      const res = await fetch("https://n8n.yourdomain.com/webhook/upload-multiple-pdf", {
+        method: "POST",
+        body: formData
+      });
+      if (res.ok) {
+        document.getElementById("status").textContent = "✅ Gửi thành công!";
+      } else {
+        document.getElementById("status").textContent = "❌ Có lỗi xảy ra!";
+      }
+    });
+  </script>
+</body>
+</html>
